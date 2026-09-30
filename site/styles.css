@@ -43,3 +43,5 @@
 .unranked{color:#626c7b}
 .overall-empty{padding:38px 20px;text-align:center;color:var(--muted);font-size:14px}
 @media(max-width:600px){.rankings{padding-top:24px}.list-option{flex:1 1 auto;padding:10px;font-size:12px}}
+
+.rankings{margin-bottom:40px}
