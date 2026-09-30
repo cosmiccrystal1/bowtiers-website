@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="BowTiers — Minecraft PvP tier lists, across one connected network.">
+  <meta name="theme-color" content="#111318">
+  <title>BowTiers · Minecraft PvP Rankings</title>
+  <link rel="icon" href="assets/bowtiersLogo.png" type="image/png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" type="module"></script>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="https://bowtiers.com" aria-label="BowTiers home"><img src="assets/bowtiersLogo.png" alt="" width="36" height="36">Bow<span>Tiers</span></a>
+      <div class="server-address"><span class="ip-label">IP:</span> <span id="server-ip">bowtiers.com</span><button id="copy-ip" type="button" aria-label="Copy server address" title="Copy server address"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg></button><span id="copy-status" role="status" class="copy-status"></span></div>
+      <div class="header-actions">
+
+        <a id="network-discord" class="discord-link" href="https://discord.gg/kFQpxEegRA" target="_blank" rel="noopener noreferrer" aria-label="Join the BowTiers Discord" title="Join the BowTiers Discord"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.3 4.4a19.8 19.8 0 0 0-4.9-1.5l-.6 1.2a18.3 18.3 0 0 0-5.5 0l-.6-1.2a20 20 0 0 0-5 1.5C.6 9 .1 13.5.4 17.9a20 20 0 0 0 6 3l1.2-2a12 12 0 0 1-1.9-.9l.5-.4c3.8 1.7 7.9 1.7 11.6 0l.5.4-1.9.9 1.2 2a20 20 0 0 0 6-3c.4-5.1-.8-9.6-3.3-13.5ZM8 15.2c-1.1 0-2-1-2-2.2s.9-2.2 2-2.2 2 1 2 2.2-.9 2.2-2 2.2Zm8 0c-1.1 0-2-1-2-2.2s.9-2.2 2-2.2 2 1 2 2.2-.9 2.2-2 2.2Z"/></svg></a>
+        <div class="header-search" role="search"><label class="sr-only" for="search">Player search</label><input id="search" type="search" placeholder="Player search..." autocomplete="off" spellcheck="false" maxlength="16" aria-keyshortcuts="/" aria-controls="tier-grid"><kbd aria-hidden="true">/</kbd></div>
+      </div>
+    </header>
+    <main>
+      <section id="rankings" class="rankings" aria-labelledby="rankings-title">
+        <div class="section-heading"><div><p class="eyebrow">THE LEADERBOARD</p><h2 id="rankings-title">Network rankings</h2></div><p class="updated" id="updated" role="status">Loading rankings…</p></div>
+        <div class="toolbar">
+          <div id="tier-list" class="list-selector" role="group" aria-label="Choose a ranking list"></div>
+        </div>
+        <div class="list-info"><p id="list-description">Tier lists will appear here once the network is configured.</p><a id="join-discord" hidden target="_blank" rel="noopener noreferrer">Join this Discord ↗</a></div>
+        <p id="count" class="player-count" aria-live="polite"></p>
+        <div id="tier-grid" class="tier-grid" aria-live="polite"></div>
+        <div id="empty" class="empty-state" hidden><span class="empty-symbol" aria-hidden="true">↗</span><h3>The next chapter starts here.</h3><p>BowTiers is getting ready. Published tier lists and tested players will appear here.</p></div>
+        <button id="retry" type="button" hidden>Retry loading rankings</button>
+      </section>
+      <aside class="explainer"><span class="legend-icon" aria-hidden="true">◎</span><p><strong>Know your tier.</strong> Tier 1 is the highest. HT and LT represent the high and low divisions within each tier.</p><span class="legend-badge">HT1 → LT5</span></aside>
+    </main>
+    <footer><a class="brand small" href="./">Bow<span>Tiers</span></a><p>Copyright © 2026 BowTiers. All Rights Reserved.</p><p class="disclaimer">Not affiliated with Mojang or Microsoft.</p></footer>
+  </div>
+</body>
+</html>
+
+

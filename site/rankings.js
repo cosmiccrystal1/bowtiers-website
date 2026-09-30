@@ -1,0 +1,27 @@
+export const LISTS = [
+  ['bow', 'Bow'], ['streetfight', 'Streetfight'], ['totem-race', 'Totem Race'],
+  ['iron', 'Iron'], ['crossbow', 'Crossbow'], ['speed-archer', 'Speed Archer'], ['aerial', 'Aerial']
+];
+export const TIER_POINTS = { LT5: 1, HT5: 2, LT4: 3, HT4: 4, LT3: 6, HT3: 10, LT2: 15, HT2: 20, LT1: 30, HT1: 40 };
+
+// One identity per Minecraft UUID, including players with no published placements.
+export function overallPlayers(snapshot) {
+  const players = new Map();
+  for (const player of snapshot.players || []) {
+    players.set(player.uuid, { uuid: player.uuid, username: player.username, placements: {} });
+  }
+  for (const list of snapshot.tierLists) {
+    for (const player of list.players) {
+      if (!players.has(player.uuid)) players.set(player.uuid, { uuid: player.uuid, username: player.username, placements: {} });
+      players.get(player.uuid).placements[list.slug] = player.tier;
+    }
+  }
+  const sorted = [...players.values()].map(player => ({ ...player,
+    score: LISTS.reduce((total, [slug]) => total + (TIER_POINTS[player.placements[slug]] || 0), 0)
+  })).sort((a, b) => b.score - a.score || a.username.localeCompare(b.username) || a.uuid.localeCompare(b.uuid));
+  let rank = 0;
+  return sorted.map((player, index) => {
+    if (index === 0 || player.score !== sorted[index - 1].score) rank = index + 1;
+    return { ...player, rank };
+  });
+}

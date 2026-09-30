@@ -1,0 +1,32 @@
+ .env.example                 |   9 [32m+++[m
+ .github/workflows/check.yml  |  16 [32m+++++[m
+ .github/workflows/pages.yml  |  47 [32m+++++++++++++[m
+ .gitignore                   |   7 [32m++[m
+ AGENTS.md                    |  14 [32m++++[m
+ LAUNCH.md                    |  90 [32m++++++++++++++++++++++++[m
+ README.md                    |  67 [32m++++++++++++++++++[m
+ package-lock.json            | 163 [32m+++++++++++++++++++++++++++++++++++++++++++[m
+ package.json                 |  10 [32m+++[m
+ scripts/check.js             |  14 [32m++++[m
+ scripts/export.js            |  38 [32m++++++++++[m
+ scripts/preview.js           |  15 [32m++++[m
+ scripts/public-data.js       |  13 [32m++++[m
+ site/.nojekyll               |   0
+ site/CNAME                   |   1 [32m+[m
+ site/app.js                  | 118 [32m+++++++++++++++++++++++++++++++[m
+ site/assets/aerial.png       | Bin [31m0[m -> [32m376[m bytes
+ site/assets/bow.png          | Bin [31m0[m -> [32m261[m bytes
+ site/assets/bowtiersLogo.png | Bin [31m0[m -> [32m278486[m bytes
+ site/assets/crossbow.png     | Bin [31m0[m -> [32m246[m bytes
+ site/assets/iron.png         | Bin [31m0[m -> [32m134[m bytes
+ site/assets/mark.svg         |   1 [32m+[m
+ site/assets/speed-archer.png | Bin [31m0[m -> [32m205[m bytes
+ site/assets/streetfight.png  | Bin [31m0[m -> [32m300[m bytes
+ site/assets/totem-race.png   | Bin [31m0[m -> [32m246[m bytes
+ site/data/tiers.json         |  13 [32m++++[m
+ site/index.html              |  43 [32m++++++++++++[m
+ site/rankings.js             |  27 [32m+++++++[m
+ site/styles.css              |  45 [32m++++++++++++[m
+ test/overall.test.js         |  44 [32m++++++++++++[m
+ test/public-data.test.js     |  27 [32m+++++++[m
+ 31 files changed, 822 insertions(+)
