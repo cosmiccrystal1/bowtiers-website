@@ -3,6 +3,20 @@ export const LISTS = [
   ['iron', 'Iron'], ['crossbow', 'Crossbow'], ['speed-archer', 'Speed Archer'], ['aerial', 'Aerial']
 ];
 export const TIER_POINTS = { LT5: 1, HT5: 2, LT4: 3, HT4: 4, LT3: 6, HT3: 10, LT2: 15, HT2: 20, LT1: 30, HT1: 40 };
+export function tierColumnPlayers(players, number, profiles) {
+  return players.filter(player => player.tier === `HT${number}` || player.tier === `LT${number}`)
+    .sort((a, b) => Number(a.tier.startsWith('LT')) - Number(b.tier.startsWith('LT'))
+      || (profiles.get(b.uuid)?.score || 0) - (profiles.get(a.uuid)?.score || 0)
+      || a.username.localeCompare(b.username) || a.uuid.localeCompare(b.uuid));
+}
+export function playerTitle({ rank, score }) {
+  if (rank === 1 && score > 0) return 'Bow Grandmaster';
+  for (const [threshold, title] of [[150, 'Bow Master'], [100, 'Bow Elitist'], [50, 'Bow Warrior'],
+    [25, 'Bow Beginner'], [10, 'Bow Rookie'], [0, 'Bow Novice']]) {
+    if (score > threshold) return title;
+  }
+  return 'Unranked';
+}
 
 // One identity per Minecraft UUID, including players with no published placements.
 export function overallPlayers(snapshot) {

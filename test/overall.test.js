@@ -1,7 +1,33 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { overallPlayers, TIER_POINTS } from '../site/rankings.js';
+import { overallPlayers, TIER_POINTS, playerTitle, tierColumnPlayers } from '../site/rankings.js';
 import { publicSnapshot } from '../scripts/public-data.js';
+
+test('tier columns prioritize HT, then overall points, then alphabetical names without mutating the roster', () => {
+  const players = [
+    { uuid: 'l', username: 'Low', tier: 'LT2' },
+    { uuid: 'z', username: 'Zulu', tier: 'HT2' },
+    { uuid: 'a', username: 'Alpha', tier: 'HT2' },
+    { uuid: 'h', username: 'High', tier: 'HT2' },
+    { uuid: 'x', username: 'Other', tier: 'HT1' }
+  ];
+  const profiles = new Map([['l', { score: 200 }], ['z', { score: 50 }], ['a', { score: 50 }], ['h', { score: 80 }]]);
+  const before = [...players];
+  assert.deepEqual(tierColumnPlayers(players, 2, profiles).map(p => p.uuid), ['h', 'a', 'z', 'l']);
+  assert.deepEqual(players, before);
+  assert.deepEqual(tierColumnPlayers(players, 5, profiles), []);
+});
+
+test('profile titles use strict point thresholds and give first-place tested players priority', () => {
+  for (const [score, expected] of [[151, 'Bow Master'], [150, 'Bow Elitist'], [101, 'Bow Elitist'],
+    [100, 'Bow Warrior'], [51, 'Bow Warrior'], [50, 'Bow Beginner'], [26, 'Bow Beginner'],
+    [25, 'Bow Rookie'], [11, 'Bow Rookie'], [10, 'Bow Novice'], [1, 'Bow Novice'], [0, 'Unranked']]) {
+    assert.equal(playerTitle({ rank: 2, score }), expected);
+  }
+  assert.equal(playerTitle({ rank: 1, score: 1 }), 'Bow Grandmaster');
+  assert.equal(playerTitle({ rank: 1, score: 200 }), 'Bow Grandmaster');
+  assert.equal(playerTitle({ rank: 1, score: 0 }), 'Unranked');
+});
 
 test('overall combines placements by UUID and includes unranked database players without private fields', () => {
   const data = publicSnapshot([{ id: 1, slug: 'bow', name: 'Bow' }, { id: 2, slug: 'iron', name: 'Iron' }], [

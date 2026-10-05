@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="BowTiers — Minecraft PvP tier lists, across one connected network.">
+  <meta name="description" content="BowTiers - PvP tier lists for Bow gamemodes.">
   <meta name="theme-color" content="#111318">
-  <title>BowTiers · Minecraft PvP Rankings</title>
+  <title>BowTiers · Rankings</title>
   <link rel="icon" href="assets/bowtiersLogo.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
   <script src="app.js" type="module"></script>
@@ -22,6 +22,7 @@
       </div>
     </header>
     <main>
+      <p id="demo-notice" class="demo-notice" hidden>LOCAL PREVIEW · Sample players and rankings. These are not live results.</p>
       <section id="rankings" class="rankings" aria-labelledby="rankings-title">
         <div class="section-heading"><div><p class="eyebrow">LEADERBOARD</p><h2 id="rankings-title">Network rankings</h2></div><p class="updated" id="updated" role="status">Loading rankings…</p></div>
         <div class="toolbar">
@@ -30,11 +31,18 @@
         <div class="list-info"><p id="list-description">Tier lists will appear here once the network is configured.</p><a id="join-discord" hidden target="_blank" rel="noopener noreferrer">Join this Discord ↗</a></div>
         <p id="count" class="player-count" aria-live="polite"></p>
         <div id="tier-grid" class="tier-grid" aria-live="polite"></div>
-        <div id="empty" class="empty-state" hidden><span class="empty-symbol" aria-hidden="true">↗</span><h3>The next chapter starts here.</h3><p>BowTiers is getting ready. Published tier lists and tested players will appear here.</p></div>
+        <div id="empty" class="empty-state" hidden><span class="empty-symbol" aria-hidden="true">↗</span><p>BowTiers is getting ready. Published tier lists and tested players will appear here.</p></div>
         <button id="retry" type="button" hidden>Retry loading rankings</button>
       </section>
     </main>
     <footer><a class="brand small" href="./">Bow<span>Tiers</span></a><p>Copyright © 2026 BowTiers. All Rights Reserved.</p><p class="disclaimer">Not affiliated with Mojang or Microsoft.</p></footer>
   </div>
+  <dialog id="player-profile" aria-labelledby="profile-username" aria-describedby="profile-summary">
+    <button id="close-profile" class="close-profile" type="button" aria-label="Close player profile" autofocus>×</button>
+    <div class="profile-heading"><div id="profile-skin"></div><div><p id="profile-title" class="eyebrow"></p><h2 id="profile-username"></h2><p id="profile-summary"></p></div></div>
+    <h3 class="profile-section-title">Tiers</h3>
+    <div id="profile-tiers"></div>
+    <div id="placement-display" class="placement-display" popover="manual" role="status"></div>
+  </dialog>
 </body>
 </html>

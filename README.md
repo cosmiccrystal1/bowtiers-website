@@ -65,3 +65,11 @@ Upload PNG icons into `site/assets/` with these exact filenames: `bow.png`, `str
 
 The public snapshot also includes a top-level `players` array containing only Minecraft UUIDs and usernames. It does not export Discord account links. Older snapshots without this array still show all players found in published rankings.
 
+
+## Local sample players and profiles
+
+`npm run preview` now serves ten clearly marked sample players from `scripts/sample-data.js` at the preview data endpoint. Every list contains HT1 through LT5. Samples are outside `site/`, never write the database, and are not included in the Pages artifact. To preview your exported real data instead, use `npm run preview -- --live`. Restart an already-running preview process to activate sample mode; opening index.html directly is not supported because modules and JSON need a local HTTP server.
+
+Click a player in Overall or an individual list to open a keyboard-accessible profile with the latest Minecraft username recorded in the exported database, overall points/rank, and all seven tier placements. Unranked placements show zero points. Hover, tap, or keyboard-focus a tier for its point contribution. Escape, Close, or clicking the backdrop closes the dialog and restores focus.
+
+Skin busts use the documented [Crafty Skin Service](https://crafty.gg/skin-service) URL `https://render.crafty.gg/3d/bust/<uuid>?width=96&height=96`, displayed at 40px beside usernames. Profiles request a larger render. Images lazy-load with an initials fallback on failure. Sample identities use Alex/Steve preview skins; real players use their Minecraft UUID. Skin requests go directly from the visitor's browser to Crafty; no API credentials are needed.

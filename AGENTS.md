@@ -12,3 +12,5 @@
 - Overall defaults to a deduplicated Minecraft player roster ranked by summed points with all tier placements. The optional top-level public `players` array exposes only uuid/username, including unranked bt_players identities. Never export account-link or Discord IDs. Points HT1/LT1/HT2/LT2/HT3/LT3/HT4/LT4/HT5/LT5: 40/30/20/15/10/6/4/3/2/1. Ties share competition ranks; search preserves ranks.
 - Tier selector images are optional site/assets/<tier-list-slug>.png files; Overall has no icon. Keep the seven lists in the user-requested order.
 
+
+- User-authorized sample players are local-preview-only: scripts/sample-data.js feeds the preview server without editing site/data or MySQL. Do not publish fabricated rankings. Player profiles use the exported username/placements and Crafty bust images keyed by Minecraft UUID.
