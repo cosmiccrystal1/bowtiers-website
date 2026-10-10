@@ -2,6 +2,7 @@ import 'dotenv/config';
 import mysql from 'mysql2/promise';
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { publicSnapshot } from './public-data.js';
+import { RANKINGS_QUERY, PLAYERS_QUERY } from './public-queries.js';
 function required(name) { if (!process.env[name]) throw new Error(`Missing website export variable ${name}.`); return process.env[name]; }
 async function main() {
   const pool = mysql.createPool({
@@ -18,10 +19,8 @@ async function main() {
       await conn.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
       await conn.query('START TRANSACTION READ ONLY');
       const [lists] = await conn.execute('SELECT id, slug, name, description, invite_url FROM bt_tier_lists WHERE active = TRUE ORDER BY name');
-      const [rankings] = await conn.execute(`SELECT r.tier_list_id, r.minecraft_uuid, p.minecraft_username, r.tier
-        FROM bt_rankings r JOIN bt_players p ON p.minecraft_uuid = r.minecraft_uuid
-        JOIN bt_tier_lists t ON t.id = r.tier_list_id WHERE t.active = TRUE`);
-      const [players] = await conn.execute('SELECT minecraft_uuid, minecraft_username FROM bt_players ORDER BY minecraft_username');
+      const [rankings] = await conn.execute(RANKINGS_QUERY);
+      const [players] = await conn.execute(PLAYERS_QUERY);
       snapshot = publicSnapshot(lists, rankings, new Date(), players);
       await conn.commit();
     } catch (error) { await conn.rollback(); throw error; } finally { conn.release(); }

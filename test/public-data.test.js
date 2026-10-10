@@ -18,7 +18,7 @@ test('exports only public fields and keeps independent ranks ordered correctly',
   assert.equal(data.tierLists[0].players.length, 2);
   assert.equal(data.tierLists[1].players[0].tier, 'HT1');
   assert.ok(!JSON.stringify(data).includes('SECRET'));
-  assert.deepEqual(Object.keys(data.tierLists[0].players[0]), ['uuid', 'username', 'tier']);
+  assert.deepEqual(Object.keys(data.tierLists[0].players[0]), ['uuid', 'username', 'tier', 'region']);
 });
 test('empty tier lists survive export and checked-in data follows the public schema', async () => {
   const result = publicSnapshot([{ id: 1, slug: 'aerial', name: 'Aerial' }], []);

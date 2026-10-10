@@ -16,7 +16,7 @@ In [the website repository](https://github.com/cosmiccrystal1/bowtiers-website),
 | MYSQL_USER | Database username; prefer a SELECT-only account |
 | MYSQL_PASSWORD | That database user's password |
 
-Use SELECT permissions on `bt_tier_lists`, `bt_players`, and `bt_rankings` if your hosting plan allows a separate database user. These values must be GitHub **secrets**, never files in the public repository. Do not add Discord tokens or a token for the private bot repository.
+Use SELECT permissions on `bt_tier_lists`, `bt_players`, `bt_rankings`, `bt_rank_regions`, `bt_player_regions` and `bt_ranking_exclusions` if your hosting plan allows a separate database user. Apply bot migration **011** before deploying the updated exporter. These values must be GitHub **secrets**, never files in the public repository. Do not add Discord tokens or a token for the private bot repository.
 
 On the **Variables** tab, add `MYSQL_SSL`: `true` if the database endpoint supports verified TLS, otherwise the host's supported setting. If a private CA is required, the workflow needs the CA file configured as described in README.md.
 

@@ -4,10 +4,10 @@ import { LISTS, TIER_POINTS } from '../site/rankings.js';
 export function sampleSnapshot() {
   const tiers = Object.keys(TIER_POINTS).reverse();
   const players = tiers.map((_, index) => ({
-    uuid: String(index + 1).padStart(32, '0'), username: `DemoArcher${String(index + 1).padStart(2, '0')}`
+    uuid: String(index + 1).padStart(32, '0'), username: `DemoArcher${String(index + 1).padStart(2, '0')}`, region: ['NA', 'EU', null][index % 3]
   }));
   return { schemaVersion: 1, generatedAt: null, demo: true, players,
     tierLists: LISTS.map(([slug, name], listIndex) => ({ slug, name, description: '', inviteUrl: null,
-      players: players.map((player, index) => ({ ...player, tier: tiers[(index + listIndex) % tiers.length] }))
+      players: players.map((player, index) => ({ ...player, region: ['NA', 'EU', null][(index + listIndex) % 3], tier: tiers[(index + listIndex) % tiers.length] }))
     })) };
 }

@@ -86,7 +86,7 @@ function renderOverall(term) {
   const table = element('table', 'overall-table', '');
   const caption = element('caption', 'sr-only', 'Overall player rankings by total tier points');
   const head = document.createElement('thead'); const titles = document.createElement('tr');
-  for (const name of ['#', 'Player', 'Points', 'Tiers']) {
+  for (const name of ['#', 'Player', 'Points', 'Tiers', 'Region']) {
     const cell = element('th', '', name); cell.scope = 'col'; titles.append(cell);
   }
   head.append(titles);
@@ -110,6 +110,10 @@ function renderOverall(term) {
       placements.append(placement);
     }
     tiers.append(placements); row.append(tiers);
+    const region = element('td', 'overall-region', player.region || '—');
+    region.dataset.region = player.region || 'unknown';
+    region.setAttribute('aria-label', player.region ? `Region: ${player.region}` : 'Region unknown');
+    row.append(region);
     body.append(row);
   }
   table.append(caption, head, body); $('#tier-grid').append(table);
@@ -145,7 +149,10 @@ function render() {
       const li = element('li', 'player-row', '');
       const button = playerButton(player);
       button.classList.add(player.tier.startsWith('LT') ? 'low-tier-player' : 'high-tier-player');
-      button.setAttribute('aria-label', `View ${player.username}'s profile, ${player.tier}`);
+      const region = element('span', 'region-stripe', player.region || '—');
+      region.dataset.region = player.region || 'unknown'; region.setAttribute('aria-hidden', 'true');
+      button.append(region);
+      button.setAttribute('aria-label', `View ${player.username}'s profile, ${player.tier}, ${player.region || 'unknown'} region`);
       li.append(button);
       ul.append(li);
     }

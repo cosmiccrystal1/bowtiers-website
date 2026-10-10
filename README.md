@@ -6,7 +6,7 @@ Public website for **bowtiers.com**, hosted by GitHub Pages from [cosmiccrystal1
 
 The bots live separately in the private `cosmiccrystal1/bowtiers-bots` repository. This repository needs no access to that repository, no Discord bot token, and no Discord server/role IDs. Only `site/` is uploaded as a Pages artifact.
 
-Rankings export and deploy through GitHub Actions on a five-minute schedule. Open pages check for updated rankings every 60 seconds. Follow [LIVE-RANKINGS.md](LIVE-RANKINGS.md) for setup; no Cloudflare service or Windows publishing task is needed.
+Rankings export and deploy through GitHub Actions, triggered every five minutes by a hosted cron service. Follow [LIVE-RANKINGS.md](LIVE-RANKINGS.md) to configure cron-job.org and a repository-scoped GitHub token. This account setup is required to activate updates; no Cloudflare service or Windows publishing task is needed. Open pages check for updated rankings every 60 seconds.
 
 ## Local use
 
@@ -26,7 +26,7 @@ To test a live export locally, copy `.env.example` to `.env`, configure a read-o
 ## GitHub Pages setup
 
 1. In this repository's **Settings → Pages**, choose **GitHub Actions** as the source.
-2. Under **Settings → Secrets and variables → Actions**, add these **repository secrets**: `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`. They are not copied over automatically from the old repository or your PC. Use a database account with SELECT access only to `bt_tier_lists`, `bt_players` and `bt_rankings` if Shockbyte allows additional users.
+2. Under **Settings → Secrets and variables → Actions**, add these **repository secrets**: `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`. They are not copied over automatically from the old repository or your PC. Prefer a database account with SELECT only on `bt_tier_lists`, `bt_players`, `bt_rankings`, `bt_rank_regions`, `bt_player_regions` and `bt_ranking_exclusions` if Shockbyte allows additional users.
 3. Add the repository variable `MYSQL_SSL` as `true` when the endpoint supports TLS, otherwise `false`. For a private CA, adapt the workflow to write the certificate from a secret and set `MYSQL_SSL_CA_FILE` to that temporary file; do not disable certificate verification.
 4. First apply the bot repository's database migrations and `db:seed`. Confirm Shockbyte allows GitHub-hosted runner connections. If the host requires fixed source IPs, use an appropriate controlled export runner instead.
 5. Run **Export rankings and deploy Pages** from the Actions tab. Future pushes to `main` affecting site/export files, manual runs and scheduled runs (every five minutes, subject to GitHub scheduling delays and deployment time) deploy fresh public data.
@@ -53,7 +53,11 @@ References: [GitHub Pages availability](https://docs.github.com/en/pages/getting
 
 ## Data boundary
 
-The exporter starts a read-only transaction and selects an allowlist of public fields. Public JSON schema version 1 exposes tier-list names/slugs/descriptions/invite URLs and player Minecraft UUIDs/usernames/tiers. It omits staff assignments, Discord user IDs, account links, tickets, audit records and credentials. Browser code fetches only `site/data/tiers.json`; it never connects directly to MySQL.
+The exporter starts a read-only transaction and selects an allowlist of public fields. Public JSON schema version 1 exposes tier-list names/slugs/descriptions/invite URLs and player Minecraft UUIDs/usernames/tiers, plus an optional NA/EU/null region. It omits staff assignments, Discord user IDs, account links, tickets, audit records, restriction details and credentials. Browser code fetches only `site/data/tiers.json`; it never connects directly to MySQL.
+
+Before deploying this exporter, apply bot migration **011-regions-and-ranking-visibility.sql** and extend any table-limited exporter account's SELECT grants to the three new public source tables above. Region selection happens in Discord tier servers via required onboarding or the testing modal. Each tier view uses its own region, while Overall uses the most recent selection across servers. Historical selections with no timestamp leave Overall unknown until a new choice. Individual rows have expanding red NA / green EU / gray unknown stripes; Overall has a Region column. Old feeds without region fields still work.
+
+Active `/restrict` UUID snapshots are excluded from both the roster and every list until expiry; command bans are excluded indefinitely. The exporter queries only UUID/deadline data, never private Discord punishment records. Stored ranks and history remain intact and expired exclusions return on the next export. Visibility changes wait for a successful export, Pages deployment and browser refresh. If the new schema/grants are missing, deployment fails and preserves the prior site.
 
 ## Independent updates
 
@@ -65,7 +69,7 @@ Overall is the default view. It lists each Minecraft player in `bt_players` once
 
 Upload PNG icons into `site/assets/` with these exact filenames: `bow.png`, `streetfight.png`, `totem-race.png`, `iron.png`, `crossbow.png`, `speed-archer.png`, and `aerial.png`. Transparent square images work best and display at 24 × 24 pixels before each selector label. Missing images are hidden until supplied; Overall has no icon. Commit and publish the images with the website assets.
 
-The public snapshot also includes a top-level `players` array containing only Minecraft UUIDs and usernames. It does not export Discord account links. Older snapshots without this array still show all players found in published rankings.
+The public snapshot also includes a top-level `players` array containing only Minecraft UUIDs, usernames and NA/EU/null region. It does not export Discord account links or selection timestamps. Older snapshots without this array still show all players found in published rankings.
 
 
 ## Local sample players and profiles

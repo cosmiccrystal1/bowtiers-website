@@ -4,7 +4,8 @@ export const LISTS = [
 ];
 export const TIER_POINTS = { LT5: 1, HT5: 2, LT4: 3, HT4: 4, LT3: 6, HT3: 10, LT2: 15, HT2: 20, LT1: 30, HT1: 40 };
 export function prepareSnapshot(snapshot) {
-  const identity = p => p && typeof p.uuid === 'string' && typeof p.username === 'string';
+  const identity = p => p && typeof p.uuid === 'string' && typeof p.username === 'string'
+    && (p.region == null || ['NA', 'EU'].includes(p.region));
   if (!snapshot || snapshot.schemaVersion !== 1 || !Array.isArray(snapshot.tierLists)
       || (snapshot.players !== undefined && (!Array.isArray(snapshot.players) || !snapshot.players.every(identity)))
       || snapshot.tierLists.some(t => !t || typeof t.slug !== 'string' || typeof t.name !== 'string'
@@ -32,11 +33,12 @@ export function playerTitle({ rank, score }) {
 export function overallPlayers(snapshot) {
   const players = new Map();
   for (const player of snapshot.players || []) {
-    players.set(player.uuid, { uuid: player.uuid, username: player.username, placements: {} });
+    players.set(player.uuid, { uuid: player.uuid, username: player.username, region: player.region || null, placements: {} });
   }
   for (const list of snapshot.tierLists) {
     for (const player of list.players) {
-      if (!players.has(player.uuid)) players.set(player.uuid, { uuid: player.uuid, username: player.username, placements: {} });
+      // Per-list regions cannot establish which choice was most recent globally.
+      if (!players.has(player.uuid)) players.set(player.uuid, { uuid: player.uuid, username: player.username, region: null, placements: {} });
       players.get(player.uuid).placements[list.slug] = player.tier;
     }
   }

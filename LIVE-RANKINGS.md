@@ -1,8 +1,72 @@
 # Scheduled rankings updates
 
-## Selected setup: GitHub Actions every five minutes
+Before deploying the current exporter, apply bot migration **011** and give the export account SELECT on `bt_rank_regions`, `bt_player_regions` and `bt_ranking_exclusions` in addition to the original three source tables. These supply public regions and restriction visibility; no Discord account-link access is needed. See README.md for coordinated rollout.
 
-The selected deployment uses GitHub Actions' built-in schedule, `2-59/5 * * * *`, to export current rankings from MySQL and publish the GitHub Pages website. It requests runs at minutes 2, 7, 12, …, 57 each hour, avoiding common clock-boundary peaks while retaining five-minute intervals. No Cloudflare account, external cron service, Windows publishing task or additional hosting is required. Open browser pages continue checking for updated JSON every 60 seconds.
+## Selected setup: hosted cron triggers GitHub every five minutes
+
+Selected on 2026-10-10 after GitHub's native schedule stopped delivering regular events. Use cron-job.org to call the existing GitHub workflow. GitHub still exports from MySQL and deploys Pages; the external service only sends the authenticated trigger. Neither the bot hosting computer nor Cloudflare is needed. The service and token must be configured in your accounts; these local documentation changes do not activate a cron job.
+
+### 1. Create a limited GitHub token
+
+1. Open GitHub **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**.
+2. Name it `BowTiers website cron`, select resource owner **cosmiccrystal1**, and choose an expiration you will remember to renew.
+3. Under **Repository access**, choose **Only select repositories → bowtiers-website**.
+4. Under **Repository permissions**, give **Actions: Read and write**. Metadata read access is automatic; no additional permissions are needed for workflow dispatch.
+5. Generate the token and copy it privately into the cron service's Authorization header below. Do not paste it into chat, a URL, source code, or a commit. This token allows the service to trigger workflows in the selected repository; it does not need access to bowtiers-bots or your MySQL credentials.
+
+### 2. Create the hosted job
+
+1. Create/sign in to an account at https://console.cron-job.org/ and choose **Create cronjob**.
+2. Title: `BowTiers rankings update`.
+3. URL (one line):
+
+   ```text
+   https://api.github.com/repos/cosmiccrystal1/bowtiers-website/actions/workflows/pages.yml/dispatches
+   ```
+
+4. Choose execution **Every 5 minutes**. If using custom cron, use `*/5 * * * *`. Keep the job enabled.
+5. Open the advanced request settings. Set **Request method: POST**, and add these custom headers, replacing only the token placeholder:
+
+   | Header | Value |
+   | --- | --- |
+   | Authorization | `Bearer YOUR_FINE_GRAINED_TOKEN` |
+   | Accept | `application/vnd.github+json` |
+   | Content-Type | `application/json` |
+   | User-Agent | `BowTiers-Rankings-Cron` |
+   | X-GitHub-Api-Version | `2026-03-10` |
+
+6. Set the **Request body** exactly to:
+
+   ```json
+   {"ref":"main"}
+   ```
+
+7. Leave HTTP Basic authentication disabled; the Authorization header provides authentication. Enable failure notifications if desired. Save the job and use its test/run function.
+
+### 3. Confirm the trigger and deployment
+
+1. With API version `2026-03-10`, a successful dispatch returns HTTP **200** with a workflow run ID and URL. This confirms the trigger, not the completed export. Older API versions may return **204** with no body.
+2. Open https://github.com/cosmiccrystal1/bowtiers-website/actions/workflows/pages.yml and find the new **workflow_dispatch** run (the UI may label it manually triggered, even when cron sent it). It will not have event type `schedule`.
+3. Confirm the run's export and Pages deployment finish successfully, then check the update time on bowtiers.com.
+4. Confirm the cron service's execution history advances at five-minute intervals and new GitHub runs appear. Deployment queue/runtime and the site's 60-second browser polling add delay; five minutes is a trigger interval, not a guaranteed end-to-end deadline.
+5. Once hosted triggering is confirmed, remove just the `schedule:` block and its cron/comment from `.github/workflows/pages.yml`, commit and push to `main`. Keep `workflow_dispatch:`, `push:`, all job steps, permissions and concurrency. This avoids duplicate deployments if GitHub's scheduler resumes. Do not disable the whole workflow in the Actions UI, as that would also prevent external dispatches.
+
+No code push is required to start the hosted trigger: the published workflow already supports `workflow_dispatch`. Keep existing GitHub MySQL secrets and `site/config.js` unchanged. Do not give database credentials to cron-job.org.
+
+Troubleshooting:
+
+- **401:** invalid, expired or revoked token; renew it and update the Authorization header.
+- **403:** check Actions write permission, selected repository, account access and any rate-limit response.
+- **404:** check the owner/repository/workflow filename and token repository access.
+- **422:** check JSON body, `ref: main`, and the published `workflow_dispatch` trigger.
+- **Successful HTTP response but failed deployment:** open the GitHub run's logs. Cron only knows whether GitHub accepted the trigger, not whether MySQL export or Pages deployment succeeded.
+- **Triggers stop later:** inspect cron execution/failure history and job enabled state, plus token expiration. Renew the token before it expires.
+
+References: [cron-job.org custom requests](https://cron-job.org/en/faq/), [GitHub workflow dispatch API and token permissions](https://docs.github.com/en/rest/actions/workflows#create-a-workflow-dispatch-event).
+
+## Previous setup: GitHub Actions built-in schedule
+
+The previous deployment used GitHub Actions' built-in schedule, `2-59/5 * * * *`, to export current rankings from MySQL and publish the GitHub Pages website. It requests runs at minutes 2, 7, 12, …, 57 each hour, avoiding common clock-boundary peaks while retaining five-minute intervals. No Cloudflare account, external cron service, Windows publishing task or additional hosting is required. Open browser pages continue checking for updated JSON every 60 seconds.
 
 1. Publish `.github/workflows/pages.yml` and these documentation changes to `main` in `cosmiccrystal1/bowtiers-website`. Scheduled workflows run from the repository's default branch; confirm that it is `main`.
 2. In the repository's **Settings → Pages**, keep **Source: GitHub Actions**. Keep the existing `bowtiers.com` custom domain.
@@ -56,7 +120,7 @@ Use the same Windows account that will run the scheduled task. This is a separat
    ```
 
    If that checkout already exists, use `git pull --ff-only` inside it, then `npm.cmd ci`. Do not copy your private bot checkout into the public website repository.
-3. Copy `.env.example` to **`C:\BowTiersWebsite\.env`** and fill in the existing **BowTiers Discord/rankings database** connection values. This is not the Paper regions' `bt_mc_` database. The exporter reads `bt_tier_lists`, `bt_players` and `bt_rankings`. Prefer a MySQL user with **SELECT only** on these tables. Ensure this Windows host may connect to that database. Keep the file ignored and local. Preserve your endpoint's approved TLS configuration; the Paper plugin's `ssl-mode` setting is not a website environment variable.
+3. Copy `.env.example` to **`C:\BowTiersWebsite\.env`** and fill in the existing **BowTiers Discord/rankings database** connection values. This is not the Paper regions' `bt_mc_` database. After bot migration 011, the exporter reads `bt_tier_lists`, `bt_players`, `bt_rankings`, `bt_rank_regions`, `bt_player_regions` and `bt_ranking_exclusions`. Prefer a MySQL user with **SELECT only** on these tables. Ensure this Windows host may connect to that database. Keep the file ignored and local. Preserve your endpoint's approved TLS configuration; the Paper plugin's `ssl-mode` setting is not a website environment variable.
 
    ```powershell
    Copy-Item .env.example .env

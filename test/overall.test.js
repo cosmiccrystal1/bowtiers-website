@@ -38,11 +38,11 @@ test('overall combines placements by UUID and includes unranked database players
     { minecraft_uuid: 'a', minecraft_username: 'Alpha', account_link: 'SECRET' }
   ]);
   assert.deepEqual(overallPlayers(data), [
-    { uuid: 'a', username: 'Alpha', placements: { bow: 'HT1', iron: 'LT2' }, score: 55, rank: 1 },
-    { uuid: 'z', username: 'Zulu', placements: {}, score: 0, rank: 2 }
+    { uuid: 'a', username: 'Alpha', region: null, placements: { bow: 'HT1', iron: 'LT2' }, score: 55, rank: 1 },
+    { uuid: 'z', username: 'Zulu', region: null, placements: {}, score: 0, rank: 2 }
   ]);
   assert.ok(!JSON.stringify(data).includes('SECRET'));
-  assert.deepEqual(Object.keys(data.players[0]), ['uuid', 'username']);
+  assert.deepEqual(Object.keys(data.players[0]), ['uuid', 'username', 'region']);
 });
 
 test('overall uses the exact point schedule, sums lists, shares ties and preserves ranks when filtered', () => {
