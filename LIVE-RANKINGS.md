@@ -2,7 +2,7 @@
 
 ## Selected setup: GitHub Actions every five minutes
 
-The selected deployment uses GitHub Actions' built-in schedule, `*/5 * * * *`, to export current rankings from MySQL and publish the GitHub Pages website. No Cloudflare account, external cron service, Windows publishing task or additional hosting is required. Open browser pages continue checking for updated JSON every 60 seconds.
+The selected deployment uses GitHub Actions' built-in schedule, `2-59/5 * * * *`, to export current rankings from MySQL and publish the GitHub Pages website. It requests runs at minutes 2, 7, 12, …, 57 each hour, avoiding common clock-boundary peaks while retaining five-minute intervals. No Cloudflare account, external cron service, Windows publishing task or additional hosting is required. Open browser pages continue checking for updated JSON every 60 seconds.
 
 1. Publish `.github/workflows/pages.yml` and these documentation changes to `main` in `cosmiccrystal1/bowtiers-website`. Scheduled workflows run from the repository's default branch; confirm that it is `main`.
 2. In the repository's **Settings → Pages**, keep **Source: GitHub Actions**. Keep the existing `bowtiers.com` custom domain.
@@ -14,6 +14,14 @@ The selected deployment uses GitHub Actions' built-in schedule, `*/5 * * * *`, t
 If a Cloudflare publishing task was previously configured, disable that task after confirming the Pages feed works. If it was never configured, skip the optional alternative below entirely.
 
 Reference: [GitHub scheduled workflow behavior](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
+
+### If scheduled runs are absent but manual runs succeed
+
+Check the workflow's enabled state, default branch and the workflow file on GitHub rather than only the local checkout. The repository's push-path filter applies only to pushes; it does not prevent scheduled events. A manual run executes one deployment and does not restart a scheduling timer.
+
+On 2026-10-10 at 13:25 UTC, the public GitHub API showed this repository's workflow active on `main`, with the correct five-minute schedule. The latest scheduled run had been created at 06:58 UTC, while a manual run at 13:01 UTC completed successfully. This establishes that no recent scheduled event was created, rather than a scheduled deployment failing. The exact cause is not exposed by the public API. GitHub's status page reported Actions operational, which does not rule out repository-specific schedule delays.
+
+The offset schedule is a mitigation following GitHub's recommendation to avoid busy times, not a guaranteed fix. Publish it to `main` and inspect runs filtered by event **schedule**. If events remain absent, report the repository, workflow path, latest successful manual run and last scheduled event to GitHub Support. If dependable five-minute updates are required, use an external scheduler to trigger the existing `workflow_dispatch` event; it can keep the same MySQL export and Pages deployment without Cloudflare.
 
 ## Optional previous alternative: publish every 60 seconds
 

@@ -2,7 +2,8 @@ name: Export rankings and deploy Pages
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/5 * * * *'
+    # Every five minutes, offset from common :00/:05 scheduling peaks.
+    - cron: '2-59/5 * * * *'
   push:
     branches: [main]
     paths: ['site/**', 'scripts/**', 'test/**', 'package*.json', '.github/workflows/pages.yml']
