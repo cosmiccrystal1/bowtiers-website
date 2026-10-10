@@ -1,4 +1,23 @@
-# Publish rankings every 60 seconds
+# Scheduled rankings updates
+
+## Selected setup: GitHub Actions every five minutes
+
+The selected deployment uses GitHub Actions' built-in schedule, `*/5 * * * *`, to export current rankings from MySQL and publish the GitHub Pages website. No Cloudflare account, external cron service, Windows publishing task or additional hosting is required. Open browser pages continue checking for updated JSON every 60 seconds.
+
+1. Publish `.github/workflows/pages.yml` and these documentation changes to `main` in `cosmiccrystal1/bowtiers-website`. Scheduled workflows run from the repository's default branch; confirm that it is `main`.
+2. In the repository's **Settings → Pages**, keep **Source: GitHub Actions**. Keep the existing `bowtiers.com` custom domain.
+3. Under **Settings → Secrets and variables → Actions**, retain the working export secrets: `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`. These connect to the Discord/rankings database, not the regional Paper database. Preserve the existing `MYSQL_SSL` Actions variable if configured. Database access should be limited to SELECT on the public source tables where possible.
+4. Keep `site/config.js` set to `export const RANKINGS_URL = './data/tiers.json';`. This reads the freshly deployed Pages data rather than an external feed.
+5. Open **Actions → Export rankings and deploy Pages → Run workflow**, choose `main`, and run once. Confirm the export and Pages deployment both succeed. Subsequent scheduled runs require no hosting-computer access.
+6. Check bowtiers.com's update time after a successful run. A changed rank appears after the next successful scheduled export/deployment and browser poll. GitHub scheduling delays, deployment duration and browser background throttling mean five minutes is the requested schedule, not a guaranteed visibility deadline.
+
+If a Cloudflare publishing task was previously configured, disable that task after confirming the Pages feed works. If it was never configured, skip the optional alternative below entirely.
+
+Reference: [GitHub scheduled workflow behavior](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
+
+## Optional previous alternative: publish every 60 seconds
+
+The following Cloudflare/Windows setup is retained only as an optional alternative. It is not needed for the selected five-minute GitHub Actions schedule.
 
 GitHub Pages continues hosting bowtiers.com. The browser now refreshes rankings every 60 seconds and retains the last successful view if a request fails. By default it still reads `site/data/tiers.json` from Pages. To publish new database changes every minute, complete the optional feed setup below.
 

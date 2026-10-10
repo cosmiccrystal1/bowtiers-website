@@ -6,7 +6,7 @@ Public website for **bowtiers.com**, hosted by GitHub Pages from [cosmiccrystal1
 
 The bots live separately in the private `cosmiccrystal1/bowtiers-bots` repository. This repository needs no access to that repository, no Discord bot token, and no Discord server/role IDs. Only `site/` is uploaded as a Pages artifact.
 
-For once-per-minute ranking exports and live browser updates, follow [LIVE-RANKINGS.md](LIVE-RANKINGS.md). GitHub Actions alone cannot schedule every 60 seconds.
+Rankings export and deploy through GitHub Actions on a five-minute schedule. Open pages check for updated rankings every 60 seconds. Follow [LIVE-RANKINGS.md](LIVE-RANKINGS.md) for setup; no Cloudflare service or Windows publishing task is needed.
 
 ## Local use
 
@@ -29,7 +29,7 @@ To test a live export locally, copy `.env.example` to `.env`, configure a read-o
 2. Under **Settings → Secrets and variables → Actions**, add these **repository secrets**: `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`. They are not copied over automatically from the old repository or your PC. Use a database account with SELECT access only to `bt_tier_lists`, `bt_players` and `bt_rankings` if Shockbyte allows additional users.
 3. Add the repository variable `MYSQL_SSL` as `true` when the endpoint supports TLS, otherwise `false`. For a private CA, adapt the workflow to write the certificate from a secret and set `MYSQL_SSL_CA_FILE` to that temporary file; do not disable certificate verification.
 4. First apply the bot repository's database migrations and `db:seed`. Confirm Shockbyte allows GitHub-hosted runner connections. If the host requires fixed source IPs, use an appropriate controlled export runner instead.
-5. Run **Export rankings and deploy Pages** from the Actions tab. Future pushes to `main` affecting site/export files, manual runs and scheduled runs (approximately every 15 minutes) deploy fresh public data.
+5. Run **Export rankings and deploy Pages** from the Actions tab. Future pushes to `main` affecting site/export files, manual runs and scheduled runs (every five minutes, subject to GitHub scheduling delays and deployment time) deploy fresh public data.
 
 The workflow checks the code, runs tests, exports from MySQL and deploys `site/`. Missing secrets or export failures stop deployment, preserving any previous working site. Configure the database before the first deployment; otherwise that first run will fail visibly.
 

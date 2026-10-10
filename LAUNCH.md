@@ -48,7 +48,7 @@ The existing `.gitignore` excludes `.env`, node_modules and local artifacts. Rev
 
 Open **Actions → Export rankings and deploy Pages**. Check that installation, tests, Export public rankings and Deploy all succeed. Use **Run workflow → main** to rerun after changing secrets/settings. The default URL is [cosmiccrystal1.github.io/bowtiers-website/](https://cosmiccrystal1.github.io/bowtiers-website/) before assigning a custom domain.
 
-This workflow uploads only `site/`. It runs on relevant pushes, manual requests and a roughly 15-minute schedule (GitHub can delay schedules). Export failure preserves any prior deployment; the first run cannot produce a live site until export succeeds. An empty leaderboard is expected if there are no recorded rankings.
+This workflow uploads only `site/`. It runs on relevant pushes, manual requests and a five-minute schedule (GitHub can delay schedules, and deployments take additional time). No Cloudflare service or Windows publishing task is needed. Export failure preserves any prior deployment; the first run cannot produce a live site until export succeeds. An empty leaderboard is expected if there are no recorded rankings.
 
 ## 5. Verify and assign the domain on GitHub
 
