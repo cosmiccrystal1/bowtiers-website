@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "generatedAt": null,
   "tierLists": [
-    { "slug": "bow", "name": "Bow", "description": "", "inviteUrl": null, "players": [] },
+    { "slug": "bow", "name": "Classic Bow", "description": "", "inviteUrl": null, "players": [] },
     { "slug": "streetfight", "name": "Streetfight", "description": "", "inviteUrl": null, "players": [] },
     { "slug": "totem-race", "name": "Totem Race", "description": "", "inviteUrl": null, "players": [] },
     { "slug": "iron", "name": "Iron", "description": "", "inviteUrl": null, "players": [] },

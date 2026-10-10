@@ -6,6 +6,8 @@ Public website for **bowtiers.com**, hosted by GitHub Pages from [cosmiccrystal1
 
 The bots live separately in the private `cosmiccrystal1/bowtiers-bots` repository. This repository needs no access to that repository, no Discord bot token, and no Discord server/role IDs. Only `site/` is uploaded as a Pages artifact.
 
+For once-per-minute ranking exports and live browser updates, follow [LIVE-RANKINGS.md](LIVE-RANKINGS.md). GitHub Actions alone cannot schedule every 60 seconds.
+
 ## Local use
 
 ```powershell
@@ -17,7 +19,7 @@ npm.cmd test
 npm.cmd run preview
 ```
 
-Open `http://127.0.0.1:4173`. The checked-in starting data lists Bow, Streetfight, Totem Race, Iron, Crossbow, Speed Archer and Aerial with no invented rankings. Your supplied PNG logo is preserved in `site/assets/bowtiersLogo.png`.
+Open `http://127.0.0.1:4173`. The checked-in starting data lists Classic Bow, Streetfight, Totem Race, Iron, Crossbow, Speed Archer and Aerial with no invented rankings. Your supplied PNG logo is preserved in `site/assets/bowtiersLogo.png`.
 
 To test a live export locally, copy `.env.example` to `.env`, configure a read-only connection to the **new BowTiers database**, and run `npm.cmd run export`. Never commit that `.env`. The bot project owns schema migrations; this exporter creates or updates no database tables.
 

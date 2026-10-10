@@ -12,6 +12,8 @@ test('exports only public fields and keeps independent ranks ordered correctly',
     { ...privatePlayer, tier_list_id: '1', tier: 'HT1', minecraft_username: 'Alpha' },
     { ...privatePlayer, tier_list_id: '1', tier: 'INVALID' }
   ]);
+  assert.equal(data.tierLists[0].name, 'Classic Bow');
+  assert.equal(data.tierLists[0].slug, 'bow');
   assert.equal(data.tierLists[0].players[0].username, 'Alpha');
   assert.equal(data.tierLists[0].players.length, 2);
   assert.equal(data.tierLists[1].players[0].tier, 'HT1');

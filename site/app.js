@@ -1,4 +1,5 @@
-import { LISTS, TIER_POINTS, overallPlayers, playerTitle, tierColumnPlayers } from './rankings.js';
+import { RANKINGS_URL } from './config.js';
+import { LISTS, TIER_POINTS, overallPlayers, playerTitle, tierColumnPlayers, prepareSnapshot } from './rankings.js';
 const $ = selector => document.querySelector(selector);
 let data;
 let selected = 'overall';
@@ -152,33 +153,41 @@ function render() {
     column.append(heading, ul); $('#tier-grid').append(column);
   }
 }
+let loading = false;
 async function load() {
+  if (loading) return;
+  loading = true;
+  const initial = !data;
   $('#retry').hidden = true;
   try {
-    const response = await fetch('data/tiers.json', { cache: 'no-store' });
+    const local = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+    const response = await fetch(local ? './data/tiers.json' : RANKINGS_URL, { cache: 'no-store', signal: AbortSignal.timeout(15000) });
     if (!response.ok) throw new Error('Request failed');
-    data = await response.json();
-    if (data.schemaVersion !== 1 || !Array.isArray(data.tierLists)) throw new Error('Unsupported data');
-    profiles = new Map(overallPlayers(data).map(player => [player.uuid, player]));
+    const next = prepareSnapshot(await response.json());
+    const nextProfiles = new Map(overallPlayers(next).map(player => [player.uuid, player]));
+    data = next;
+    profiles = nextProfiles;
     $('#demo-notice').hidden = !data.demo;
-    const select = $('#tier-list'); select.replaceChildren();
-    for (const [slug, name] of [['overall', 'Overall'], ...LISTS]) {
-      const button = element('button', 'list-option', ''); button.type = 'button'; button.dataset.slug = slug;
-      if (slug !== 'overall') button.append(listIcon(slug));
-      button.append(document.createTextNode(name));
-      button.addEventListener('click', () => { selected = slug; render(); });
-      select.append(button);
+    if (initial) {
+      const select = $('#tier-list'); select.replaceChildren();
+      for (const [slug, name] of [['overall', 'Overall'], ...LISTS]) {
+        const button = element('button', 'list-option', ''); button.type = 'button'; button.dataset.slug = slug;
+        if (slug !== 'overall') button.append(listIcon(slug));
+        button.append(document.createTextNode(name));
+        button.addEventListener('click', () => { selected = slug; render(); });
+        select.append(button);
+      }
+      const requested = new URLSearchParams(location.search).get('list');
+      selected = LISTS.some(([slug]) => slug === requested) ? requested : 'overall';
     }
-    const requested = new URLSearchParams(location.search).get('list');
-    selected = LISTS.some(([slug]) => slug === requested) ? requested : 'overall';
     const date = data.generatedAt ? new Date(data.generatedAt) : null;
     const stale = date && Date.now() - date.getTime() > 60 * 60 * 1000;
     $('#updated').textContent = data.demo ? 'Local sample data · All tiers populated' : date ? `${stale ? 'Updates delayed · ' : ''}Updated ${date.toLocaleString()}` : 'Awaiting the first published rankings';
     render();
   } catch {
-    $('#updated').textContent = 'Rankings are temporarily unavailable. Please try again.';
+    $('#updated').textContent = data ? 'Updates delayed · Showing the last successful rankings' : 'Rankings are temporarily unavailable. Please try again.';
     $('#retry').hidden = false;
-  }
+  } finally { loading = false; }
 }
 $('#search').addEventListener('input', () => { if (data) render(); });
 $('#retry').addEventListener('click', load);
@@ -210,3 +219,5 @@ $('#copy-ip').addEventListener('click', async () => {
   copyTimer = setTimeout(() => { $('#copy-status').textContent = ''; }, 4000);
 });
 load();
+setInterval(load, 60000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });

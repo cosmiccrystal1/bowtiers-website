@@ -1,8 +1,18 @@
 export const LISTS = [
-  ['bow', 'Bow'], ['streetfight', 'Streetfight'], ['totem-race', 'Totem Race'],
+  ['bow', 'Classic Bow'], ['streetfight', 'Streetfight'], ['totem-race', 'Totem Race'],
   ['iron', 'Iron'], ['crossbow', 'Crossbow'], ['speed-archer', 'Speed Archer'], ['aerial', 'Aerial']
 ];
 export const TIER_POINTS = { LT5: 1, HT5: 2, LT4: 3, HT4: 4, LT3: 6, HT3: 10, LT2: 15, HT2: 20, LT1: 30, HT1: 40 };
+export function prepareSnapshot(snapshot) {
+  const identity = p => p && typeof p.uuid === 'string' && typeof p.username === 'string';
+  if (!snapshot || snapshot.schemaVersion !== 1 || !Array.isArray(snapshot.tierLists)
+      || (snapshot.players !== undefined && (!Array.isArray(snapshot.players) || !snapshot.players.every(identity)))
+      || snapshot.tierLists.some(t => !t || typeof t.slug !== 'string' || typeof t.name !== 'string'
+        || !Array.isArray(t.players) || !t.players.every(p => identity(p) && Object.hasOwn(TIER_POINTS, p.tier)))) {
+    throw new Error('Unsupported rankings data');
+  }
+  return { ...snapshot, tierLists: snapshot.tierLists.map(t => ({ ...t, name: t.slug === 'bow' ? 'Classic Bow' : t.name })) };
+}
 export function tierColumnPlayers(players, number, profiles) {
   return players.filter(player => player.tier === `HT${number}` || player.tier === `LT${number}`)
     .sort((a, b) => Number(a.tier.startsWith('LT')) - Number(b.tier.startsWith('LT'))

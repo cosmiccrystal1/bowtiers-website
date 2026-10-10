@@ -4,7 +4,7 @@ export function publicSnapshot(lists, rankings, now = new Date(), players = []) 
     schemaVersion: 1, generatedAt: now.toISOString(),
     players: players.map(row => ({ uuid: row.minecraft_uuid, username: row.minecraft_username })),
     tierLists: lists.map(list => ({
-      slug: list.slug, name: list.name, description: list.description || '', inviteUrl: list.invite_url || null,
+      slug: list.slug, name: list.slug === 'bow' ? 'Classic Bow' : list.name, description: list.description || '', inviteUrl: list.invite_url || null,
       players: rankings.filter(row => String(row.tier_list_id) === String(list.id) && TIERS.includes(row.tier))
         .map(row => ({ uuid: row.minecraft_uuid, username: row.minecraft_username, tier: row.tier }))
         .sort((a, b) => TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier) || a.username.localeCompare(b.username))
