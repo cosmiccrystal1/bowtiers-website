@@ -7,12 +7,27 @@ export function prepareSnapshot(snapshot) {
   const identity = p => p && typeof p.uuid === 'string' && typeof p.username === 'string'
     && (p.region == null || ['NA', 'EU'].includes(p.region));
   if (!snapshot || snapshot.schemaVersion !== 1 || !Array.isArray(snapshot.tierLists)
+      || (snapshot.generatedAt != null && (typeof snapshot.generatedAt !== 'string' || !Number.isFinite(Date.parse(snapshot.generatedAt))))
       || (snapshot.players !== undefined && (!Array.isArray(snapshot.players) || !snapshot.players.every(identity)))
       || snapshot.tierLists.some(t => !t || typeof t.slug !== 'string' || typeof t.name !== 'string'
         || !Array.isArray(t.players) || !t.players.every(p => identity(p) && Object.hasOwn(TIER_POINTS, p.tier)))) {
     throw new Error('Unsupported rankings data');
   }
   return { ...snapshot, tierLists: snapshot.tierLists.map(t => ({ ...t, name: t.slug === 'bow' ? 'Classic Bow' : t.name })) };
+}
+export function latestSnapshot(current, incoming) {
+  const next = prepareSnapshot(incoming);
+  const previousTime = Date.parse(current?.generatedAt);
+  const nextTime = Date.parse(next.generatedAt);
+  // CDN propagation or an older deployment must not roll a loaded page backwards.
+  // An undated checked-in placeholder must also never replace a real export.
+  if (Number.isFinite(previousTime) && (!Number.isFinite(nextTime) || nextTime <= previousTime)) return current;
+  return next;
+}
+export function rankingsRequestUrl(source, base, now = Date.now()) {
+  const url = new URL(source, base);
+  url.searchParams.set('_bt', String(now));
+  return url.href;
 }
 export function tierColumnPlayers(players, number, profiles) {
   return players.filter(player => player.tier === `HT${number}` || player.tier === `LT${number}`)

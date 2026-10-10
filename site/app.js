@@ -1,5 +1,5 @@
 import { RANKINGS_URL } from './config.js';
-import { LISTS, TIER_POINTS, overallPlayers, playerTitle, tierColumnPlayers, prepareSnapshot } from './rankings.js';
+import { LISTS, TIER_POINTS, overallPlayers, playerTitle, tierColumnPlayers, latestSnapshot, rankingsRequestUrl } from './rankings.js';
 const $ = selector => document.querySelector(selector);
 let data;
 let selected = 'overall';
@@ -168,9 +168,10 @@ async function load() {
   $('#retry').hidden = true;
   try {
     const local = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
-    const response = await fetch(local ? './data/tiers.json' : RANKINGS_URL, { cache: 'no-store', signal: AbortSignal.timeout(15000) });
+    const response = await fetch(rankingsRequestUrl(local ? './data/tiers.json' : RANKINGS_URL, location.href),
+      { cache: 'no-store', signal: AbortSignal.timeout(15000) });
     if (!response.ok) throw new Error('Request failed');
-    const next = prepareSnapshot(await response.json());
+    const next = latestSnapshot(data, await response.json());
     const nextProfiles = new Map(overallPlayers(next).map(player => [player.uuid, player]));
     data = next;
     profiles = nextProfiles;

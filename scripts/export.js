@@ -1,8 +1,7 @@
 import 'dotenv/config';
 import mysql from 'mysql2/promise';
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
-import { publicSnapshot } from './public-data.js';
-import { RANKINGS_QUERY, PLAYERS_QUERY } from './public-queries.js';
+import { readSnapshot } from './export-snapshot.js';
 function required(name) { if (!process.env[name]) throw new Error(`Missing website export variable ${name}.`); return process.env[name]; }
 async function main() {
   const pool = mysql.createPool({
@@ -15,15 +14,7 @@ async function main() {
   try {
     const conn = await pool.getConnection();
     let snapshot;
-    try {
-      await conn.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
-      await conn.query('START TRANSACTION READ ONLY');
-      const [lists] = await conn.execute('SELECT id, slug, name, description, invite_url FROM bt_tier_lists WHERE active = TRUE ORDER BY name');
-      const [rankings] = await conn.execute(RANKINGS_QUERY);
-      const [players] = await conn.execute(PLAYERS_QUERY);
-      snapshot = publicSnapshot(lists, rankings, new Date(), players);
-      await conn.commit();
-    } catch (error) { await conn.rollback(); throw error; } finally { conn.release(); }
+    try { snapshot = await readSnapshot(conn); } finally { conn.release(); }
     await mkdir('site/data', { recursive: true });
     const temp = `site/data/tiers-${process.pid}.tmp`;
     await writeFile(temp, JSON.stringify(snapshot, null, 2) + '\n');

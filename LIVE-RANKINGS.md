@@ -2,6 +2,12 @@
 
 Before deploying the current exporter, apply bot migration **011** and give the export account SELECT on `bt_rank_regions`, `bt_player_regions` and `bt_ranking_exclusions` in addition to the original three source tables. These supply public regions and restriction visibility; no Discord account-link access is needed. See README.md for coordinated rollout.
 
+## Preventing rankings from reverting during refresh
+
+The browser now requests a fresh cache key on each poll and retains its newest successfully loaded export when a response has an older/equal `generatedAt`, or is the undated checked-in placeholder. Invalid timestamps/data are rejected. This protects an open page during CDN propagation; a genuinely newer database export may still change rankings. No extra scheduler is required.
+
+Exports read all public tables in one read-only consistent snapshot and use the database's UTC timestamp at its creation, rather than the export runner's clock or finish time. See [MySQL consistent snapshots](https://dev.mysql.com/doc/refman/8.4/en/commit.html). The Pages workflow retains its shared concurrency group and explicitly checks out `main`; dispatches for other branches are skipped. Publish the website changes, including `.github/workflows/pages.yml`, `scripts/export-snapshot.js` and `site/`, then let a successful export/deployment complete. Both bot and website repositories have companion fixes; this change does not alter the database schema or cron service credentials.
+
 ## Selected setup: hosted cron triggers GitHub every five minutes
 
 Selected on 2026-10-10 after GitHub's native schedule stopped delivering regular events. Use cron-job.org to call the existing GitHub workflow. GitHub still exports from MySQL and deploys Pages; the external service only sends the authenticated trigger. Neither the bot hosting computer nor Cloudflare is needed. The service and token must be configured in your accounts; these local documentation changes do not activate a cron job.
