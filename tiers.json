@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-11T22:00:26.515Z",
+  "generatedAt": "2026-10-11T22:01:15.625Z",
   "players": [
     {
       "uuid": "fd4c353341ca4d32899a641035c4d1d9",
@@ -117,6 +117,12 @@
           "username": "Ebemm",
           "tier": "HT4",
           "region": "EU"
+        },
+        {
+          "uuid": "e47678f0355d40d2a1ec46c5abd910f4",
+          "username": "Delects",
+          "tier": "LT4",
+          "region": "NA"
         },
         {
           "uuid": "32afd9cf96fb43f0abbcec288ac35490",
