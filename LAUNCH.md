@@ -46,9 +46,9 @@ The existing `.gitignore` excludes `.env`, node_modules and local artifacts. Rev
 
 ## 4. Confirm deployment
 
-Open **Actions → Export rankings and deploy Pages**. Check that installation, tests, Export public rankings and Deploy all succeed. Use **Run workflow → main** to rerun after changing secrets/settings. The default URL is [cosmiccrystal1.github.io/bowtiers-website/](https://cosmiccrystal1.github.io/bowtiers-website/) before assigning a custom domain.
+Open **Actions → Export rankings and deploy Pages**. Check that installation, tests, Export public rankings, Publish and verify live rankings, and Deploy all succeed. Use **Run workflow → main** to rerun after changing secrets/settings. The default URL is [cosmiccrystal1.github.io/bowtiers-website/](https://cosmiccrystal1.github.io/bowtiers-website/) before assigning a custom domain.
 
-This workflow uploads only `site/`. It runs on relevant pushes, manual requests and a five-minute schedule (GitHub can delay schedules, and deployments take additional time). No Cloudflare service or Windows publishing task is needed. Export failure preserves any prior deployment; the first run cannot produce a live site until export succeeds. An empty leaderboard is expected if there are no recorded rankings.
+This workflow uploads only `site/` to Pages and publishes only public `tiers.json` to the separate `rankings-data` branch. It runs on relevant pushes and manual/hosted-cron requests. Follow [LIVE-RANKINGS.md](LIVE-RANKINGS.md) for the selected minute-by-minute hosted trigger. The website polls the public data feed independently of repeated Pages deployments. Keep Pages source set to GitHub Actions; do not select `rankings-data` as its source. No Cloudflare service, new token secret or Windows publishing task is needed. Export failure preserves the previous feed/deployment; the first run cannot produce a live site until export succeeds. An empty leaderboard is expected if there are no recorded rankings.
 
 ## 5. Verify and assign the domain on GitHub
 

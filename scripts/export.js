@@ -19,7 +19,7 @@ async function main() {
     const temp = `site/data/tiers-${process.pid}.tmp`;
     await writeFile(temp, JSON.stringify(snapshot, null, 2) + '\n');
     await rename(temp, 'site/data/tiers.json');
-    console.log(`Exported ${snapshot.tierLists.length} tier lists using public fields only.`);
+    console.log(`Exported ${snapshot.tierLists.length} tier lists and ${snapshot.players.length} public players at ${snapshot.generatedAt}.`);
   } finally { await pool.end(); }
 }
 main().catch(error => {

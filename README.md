@@ -6,7 +6,7 @@ Public website for **bowtiers.com**, hosted by GitHub Pages from [cosmiccrystal1
 
 The bots live separately in the private `cosmiccrystal1/bowtiers-bots` repository. This repository needs no access to that repository, no Discord bot token, and no Discord server/role IDs. Only `site/` is uploaded as a Pages artifact.
 
-Rankings export and deploy through GitHub Actions, triggered every five minutes by a hosted cron service. Follow [LIVE-RANKINGS.md](LIVE-RANKINGS.md) to configure cron-job.org and a repository-scoped GitHub token. This account setup is required to activate updates; no Cloudflare service or Windows publishing task is needed. Open pages check for updated rankings every 60 seconds.
+Rankings export through GitHub Actions, triggered every minute by the configured hosted cron service. The workflow publishes public JSON to the separate `rankings-data` branch and verifies that the live feed serves it. GitHub Pages hosts the website; open pages check the data feed every 60 seconds without waiting for another Pages deployment. Follow [LIVE-RANKINGS.md](LIVE-RANKINGS.md) for setup and troubleshooting. No Cloudflare service or Windows publishing task is needed.
 
 ## Local use
 
@@ -29,9 +29,9 @@ To test a live export locally, copy `.env.example` to `.env`, configure a read-o
 2. Under **Settings → Secrets and variables → Actions**, add these **repository secrets**: `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`. They are not copied over automatically from the old repository or your PC. Prefer a database account with SELECT only on `bt_tier_lists`, `bt_players`, `bt_rankings`, `bt_rank_regions`, `bt_player_regions` and `bt_ranking_exclusions` if Shockbyte allows additional users.
 3. Add the repository variable `MYSQL_SSL` as `true` when the endpoint supports TLS, otherwise `false`. For a private CA, adapt the workflow to write the certificate from a secret and set `MYSQL_SSL_CA_FILE` to that temporary file; do not disable certificate verification.
 4. First apply the bot repository's database migrations and `db:seed`. Confirm Shockbyte allows GitHub-hosted runner connections. If the host requires fixed source IPs, use an appropriate controlled export runner instead.
-5. Run **Export rankings and deploy Pages** from the Actions tab. Future pushes to `main` affecting site/export files, manual runs and scheduled runs (every five minutes, subject to GitHub scheduling delays and deployment time) deploy fresh public data.
+5. Run **Export rankings and deploy Pages** from the Actions tab. Future pushes to `main` affecting site/export files and manual/hosted-cron dispatches export fresh public data. The hosted job is configured separately; publishing the workflow alone does not create a timer.
 
-The workflow checks the code, runs tests, exports from MySQL and deploys `site/`. Missing secrets or export failures stop deployment, preserving any previous working site. Configure the database before the first deployment; otherwise that first run will fail visibly.
+The workflow checks the code, runs tests, exports from MySQL, publishes/verifies the public feed and deploys `site/`. Its built-in `GITHUB_TOKEN` has repository `contents: write`; the publisher updates only the reserved `rankings-data` branch. No additional token secret is required. This branch contains only `tiers.json`, starts with an independent root commit and advances without changing `main`. Keep Pages source set to **GitHub Actions**, not this data branch. Missing secrets or export failures preserve the previous feed and stop deployment. A later Pages failure does not undo a verified feed publication.
 
 ## Custom domain and the repository rename
 
@@ -53,11 +53,11 @@ References: [GitHub Pages availability](https://docs.github.com/en/pages/getting
 
 ## Data boundary
 
-The exporter starts a read-only transaction and selects an allowlist of public fields. Public JSON schema version 1 exposes tier-list names/slugs/descriptions/invite URLs and player Minecraft UUIDs/usernames/tiers, plus an optional NA/EU/null region. It omits staff assignments, Discord user IDs, account links, tickets, audit records, restriction details and credentials. Browser code fetches only `site/data/tiers.json`; it never connects directly to MySQL.
+The exporter starts a read-only transaction and selects an allowlist of public fields. Public JSON schema version 1 exposes tier-list names/slugs/descriptions/invite URLs and player Minecraft UUIDs/usernames/tiers, plus an optional NA/EU/null region. It omits staff assignments, Discord user IDs, account links, tickets, audit records, restriction details and credentials. Browser code fetches only the public [rankings feed](https://raw.githubusercontent.com/cosmiccrystal1/bowtiers-website/rankings-data/tiers.json); it never connects directly to MySQL. The publisher refuses extra fields, samples and undated placeholders before making any GitHub write.
 
 Before deploying this exporter, apply bot migration **011-regions-and-ranking-visibility.sql** and extend any table-limited exporter account's SELECT grants to the three new public source tables above. Region selection happens in Discord tier servers via required onboarding or the testing modal. Each tier view uses its own region, while Overall uses the most recent selection across servers. Historical selections with no timestamp leave Overall unknown until a new choice. Individual rows have expanding red NA / green EU / gray unknown stripes; Overall has a Region column. Old feeds without region fields still work.
 
-Active `/restrict` UUID snapshots are excluded from both the roster and every list until expiry; command bans are excluded indefinitely. The exporter queries only UUID/deadline data, never private Discord punishment records. Stored ranks and history remain intact and expired exclusions return on the next export. Visibility changes wait for a successful export, Pages deployment and browser refresh. If the new schema/grants are missing, deployment fails and preserves the prior site.
+Active `/restrict` UUID snapshots are excluded from both the roster and every list until expiry; command bans are excluded indefinitely. The exporter queries only UUID/deadline data, never private Discord punishment records. Stored ranks and history remain intact and expired exclusions return on the next export. After publishing the website's feed configuration once, visibility changes wait for a successful export/feed publication and browser refresh. If the new schema/grants are missing, the workflow fails and preserves the prior feed/site.
 
 ## Independent updates
 
