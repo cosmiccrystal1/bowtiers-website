@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-11T14:52:37.458Z",
+  "players": [
+    {
+      "uuid": "c1c1815e09c0492da29876b67192e6de",
+      "username": "checog",
+      "region": "NA"
+    },
+    {
+      "uuid": "9994ef733ce947908218592190afde44",
+      "username": "Chriso543",
+      "region": null
+    },
+    {
+      "uuid": "12b164ebe68a4415a17f82306216db40",
+      "username": "CosmicCrystal",
+      "region": "NA"
+    },
+    {
+      "uuid": "e20b3d84c2ad41abac37224ca20cecf7",
+      "username": "CutePvPpuppy67",
+      "region": "EU"
+    },
+    {
+      "uuid": "1660c42296f849339899e6dc5df9098c",
+      "username": "Ebemm",
+      "region": "EU"
+    },
+    {
+      "uuid": "f52cbf3df1ff4a32a0978ce88cf307cc",
+      "username": "HeavensBliss",
+      "region": "NA"
+    },
+    {
+      "uuid": "ad101a21cafe4d408d75e23bb84b30df",
+      "username": "Infinittyy",
+      "region": "EU"
+    },
+    {
+      "uuid": "5357415502b340aaac1a18f5d6840a26",
+      "username": "Jamison5",
+      "region": null
+    },
+    {
+      "uuid": "72af842d3c5b4517b54eccc382ed8435",
+      "username": "NewbiePlayzXD",
+      "region": "EU"
+    },
+    {
+      "uuid": "32afd9cf96fb43f0abbcec288ac35490",
+      "username": "RealMeowzers",
+      "region": "NA"
+    },
+    {
+      "uuid": "d253cc7fd1b048638ef7e883b1604b8d",
+      "username": "ZennyMC_",
+      "region": "NA"
+    }
+  ],
+  "tierLists": [
+    {
+      "slug": "aerial",
+      "name": "Aerial",
+      "description": "",
+      "inviteUrl": null,
+      "players": []
+    },
+    {
+      "slug": "bow",
+      "name": "Classic Bow",
+      "description": "",
+      "inviteUrl": null,
+      "players": [
+        {
+          "uuid": "c1c1815e09c0492da29876b67192e6de",
+          "username": "checog",
+          "tier": "LT3",
+          "region": "NA"
+        },
+        {
+          "uuid": "12b164ebe68a4415a17f82306216db40",
+          "username": "CosmicCrystal",
+          "tier": "LT3",
+          "region": "NA"
+        },
+        {
+          "uuid": "ad101a21cafe4d408d75e23bb84b30df",
+          "username": "Infinittyy",
+          "tier": "LT3",
+          "region": "EU"
+        },
+        {
+          "uuid": "e20b3d84c2ad41abac37224ca20cecf7",
+          "username": "CutePvPpuppy67",
+          "tier": "HT4",
+          "region": "EU"
+        },
+        {
+          "uuid": "1660c42296f849339899e6dc5df9098c",
+          "username": "Ebemm",
+          "tier": "HT4",
+          "region": "EU"
+        },
+        {
+          "uuid": "32afd9cf96fb43f0abbcec288ac35490",
+          "username": "RealMeowzers",
+          "tier": "LT4",
+          "region": "NA"
+        }
+      ]
+    },
+    {
+      "slug": "crossbow",
+      "name": "Crossbow",
+      "description": "",
+      "inviteUrl": null,
+      "players": []
+    },
+    {
+      "slug": "iron",
+      "name": "Iron",
+      "description": "",
+      "inviteUrl": null,
+      "players": []
+    },
+    {
+      "slug": "speed-archer",
+      "name": "Speed Archer",
+      "description": "",
+      "inviteUrl": null,
+      "players": []
+    },
+    {
+      "slug": "streetfight",
+      "name": "Streetfight",
+      "description": "",
+      "inviteUrl": null,
+      "players": [
+        {
+          "uuid": "12b164ebe68a4415a17f82306216db40",
+          "username": "CosmicCrystal",
+          "tier": "HT3",
+          "region": "NA"
+        },
+        {
+          "uuid": "f52cbf3df1ff4a32a0978ce88cf307cc",
+          "username": "HeavensBliss",
+          "tier": "LT3",
+          "region": "NA"
+        },
+        {
+          "uuid": "32afd9cf96fb43f0abbcec288ac35490",
+          "username": "RealMeowzers",
+          "tier": "HT4",
+          "region": "NA"
+        }
+      ]
+    },
+    {
+      "slug": "totem-race",
+      "name": "Totem Race",
+      "description": "",
+      "inviteUrl": null,
+      "players": []
+    }
+  ]
+}
