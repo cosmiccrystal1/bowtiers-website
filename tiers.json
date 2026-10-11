@@ -1,7 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-11T18:32:18.318Z",
+  "generatedAt": "2026-10-11T18:33:26.816Z",
   "players": [
+    {
+      "uuid": "fd4c353341ca4d32899a641035c4d1d9",
+      "username": "Benbloom",
+      "region": "EU"
+    },
     {
       "uuid": "c1c1815e09c0492da29876b67192e6de",
       "username": "checog",
