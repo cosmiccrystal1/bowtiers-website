@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-11T21:25:26.576Z",
+  "generatedAt": "2026-10-11T21:26:35.123Z",
   "players": [
     {
       "uuid": "fd4c353341ca4d32899a641035c4d1d9",
@@ -30,7 +30,7 @@
     {
       "uuid": "e47678f0355d40d2a1ec46c5abd910f4",
       "username": "Delects",
-      "region": null
+      "region": "NA"
     },
     {
       "uuid": "1660c42296f849339899e6dc5df9098c",
