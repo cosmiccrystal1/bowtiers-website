@@ -11,6 +11,8 @@
 
 # BowTiers public website
 
+- 2026-10-12: Overall count label is Verified Players (individual lists remain tested players). Bow Grandmaster requires rank1 AND score>150, identical to the existing strict Bow Master threshold; otherwise use ordinary score title. Boundary regressions150/151 and local preview rank1 at125=>Bow Elitist verified. Public source schema/export unchanged; companion bot migration012 is private only. Local changes only, no commit/push/deploy.
+
 - This is the public repository `cosmiccrystal1/bowtiers-website`, publishing `site/` to GitHub Pages at bowtiers.com (domain registered at Porkbun).
 - The private bots repository is `cosmiccrystal1/bowtiers-bots`. Its current local checkout is the sibling `../bowtiers/` directory. Never copy its `.env`, server/role configuration, member snapshots, account links, or audit data here.
 - Website code is independent of the private repository. The exporter reads only tier lists, Minecraft player identities and rankings from the separate BowTiers MySQL database using SELECT queries. It must not need a GitHub token for the private bots repository.

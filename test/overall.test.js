@@ -24,7 +24,9 @@ test('profile titles use strict point thresholds and give first-place tested pla
     [25, 'Bow Rookie'], [11, 'Bow Rookie'], [10, 'Bow Novice'], [1, 'Bow Novice'], [0, 'Unranked']]) {
     assert.equal(playerTitle({ rank: 2, score }), expected);
   }
-  assert.equal(playerTitle({ rank: 1, score: 1 }), 'Bow Grandmaster');
+  assert.equal(playerTitle({ rank: 1, score: 1 }), 'Bow Novice');
+  assert.equal(playerTitle({ rank: 1, score: 150 }), 'Bow Elitist');
+  assert.equal(playerTitle({ rank: 1, score: 151 }), 'Bow Grandmaster');
   assert.equal(playerTitle({ rank: 1, score: 200 }), 'Bow Grandmaster');
   assert.equal(playerTitle({ rank: 1, score: 0 }), 'Unranked');
 });

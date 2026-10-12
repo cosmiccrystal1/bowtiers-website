@@ -81,7 +81,7 @@ function renderOverall(term) {
   const players = [...profiles.values()].filter(player => player.username.toLowerCase().includes(term));
   $('#list-description').textContent = 'Players ranked by total points across all seven tier lists. Equal scores share a rank.';
   $('#list-description').hidden = false; $('.list-info').hidden = false;
-  $('#count').textContent = `${players.length} tested ${players.length === 1 ? 'player' : 'players'}${term ? ' matching your search' : ''}`;
+  $('#count').textContent = `${players.length} verified ${players.length === 1 ? 'player' : 'players'}${term ? ' matching your search' : ''}`;
   if (!players.length) { $('#tier-grid').append(element('p', 'overall-empty', term ? 'No matching players.' : 'No players have been published yet.')); return; }
   const table = element('table', 'overall-table', '');
   const caption = element('caption', 'sr-only', 'Overall player rankings by total tier points');

@@ -36,7 +36,7 @@ export function tierColumnPlayers(players, number, profiles) {
       || a.username.localeCompare(b.username) || a.uuid.localeCompare(b.uuid));
 }
 export function playerTitle({ rank, score }) {
-  if (rank === 1 && score > 0) return 'Bow Grandmaster';
+  if (rank === 1 && score > 150) return 'Bow Grandmaster';
   for (const [threshold, title] of [[150, 'Bow Master'], [100, 'Bow Elitist'], [50, 'Bow Warrior'],
     [25, 'Bow Beginner'], [10, 'Bow Rookie'], [0, 'Bow Novice']]) {
     if (score > threshold) return title;
