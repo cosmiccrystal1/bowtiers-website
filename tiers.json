@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-16T00:47:15.916Z",
+  "generatedAt": "2026-10-16T00:48:12.830Z",
   "players": [
     {
       "uuid": "52522709069e40c78abe41af758d33c8",
@@ -200,6 +200,12 @@
           "uuid": "12b164ebe68a4415a17f82306216db40",
           "username": "CosmicCrystal",
           "tier": "HT3",
+          "region": "NA"
+        },
+        {
+          "uuid": "52522709069e40c78abe41af758d33c8",
+          "username": "_Cherrypepsi",
+          "tier": "LT3",
           "region": "NA"
         },
         {
