@@ -4,6 +4,23 @@ Before deploying the current exporter, apply bot migration **011** and give the 
 
 ## Successful workflows but an old website timestamp
 
+### October 15: a waiting Pages job blocked every export
+
+Read-only public API checks found [run 38263121140](https://github.com/cosmiccrystal1/bowtiers-website/actions/runs/38263121140) waiting since October 12 at 14:28 UTC, with no job steps started. Minute dispatches still arrived, but the workflow-wide `bowtiers-pages` lock held them pending; each new pending run replaced the previous pending run. The browser's raw feed and the old Pages JSON both remained dated **2026-10-12T14:27:54.321Z**. The Pages environment allowed `main` and listed no required reviewers or wait timer; the public API did not explain the underlying wait. This is a blocked workflow, not evidence of a failed database connection.
+
+The workflow now uses separate job locks. **Refresh public rankings** exports/publishes on every minute dispatch without the Pages environment. **Deploy website files** uses the Pages environment only for source pushes or a manual dispatch with **Also deploy website files** selected. Waiting for a Pages deployment therefore cannot block the next rankings export. Database values remain repository Actions secrets as described in README.md.
+
+To recover after publishing this change:
+
+1. Open the waiting run above and choose **Cancel workflow**. If normal cancellation does not finish, use GitHub's force-cancel API for that run. Do not remove environment rules just to unblock a queue.
+2. Publish `.github/workflows/pages.yml` to `main`. The push refreshes the data and requests one Pages deployment. Leave the existing hosted cron job and its `{"ref":"main"}` body unchanged; omitted `deploy_pages` defaults to false.
+3. In the next dispatched run, confirm **Refresh public rankings → Publish and verify live rankings** succeeds and reports a current timestamp. **Deploy website files** being skipped on cron dispatches is expected.
+4. Open the raw feed below and compare `generatedAt`; the live site should load it on its next 60-second poll. To deploy website files manually later, use **Run workflow → main → Also deploy website files**.
+
+Reference: [GitHub concurrency behavior](https://docs.github.com/en/actions/concepts/workflows-and-actions/concurrency). A job execution timeout does not resolve a workflow that has not started its steps.
+
+### October 11: successful exports did not refresh the Pages data file
+
 On 2026-10-11, [run 38110395832](https://github.com/cosmiccrystal1/bowtiers-website/actions/runs/38110395832) exported an artifact dated **2026-10-11T04:04:14.256Z** with 11 public players. At the same time, bowtiers.com's JSON still served **2026-10-10T20:01:15.434Z** with 8 players. This confirms that export succeeded but the live Pages file remained old; it was not merely a stale timestamp in one browser. Repeated successful deployments reused source commit `1632231`. This matches the behavior reported in [actions/deploy-pages issue 383](https://github.com/actions/deploy-pages/issues/383), although GitHub's internal cause is not confirmed.
 
 The prepared fix separates rankings publication from Pages deployment:
@@ -26,11 +43,11 @@ Later rankings updates require only export/feed publication and the next browser
 
 The browser now requests a fresh cache key on each poll and retains its newest successfully loaded export when a response has an older/equal `generatedAt`, or is the undated checked-in placeholder. Invalid timestamps/data are rejected. This protects an open page during CDN propagation; a genuinely newer database export may still change rankings. No extra scheduler is required.
 
-Exports read all public tables in one read-only consistent snapshot and use the database's UTC timestamp at its creation, rather than the export runner's clock or finish time. See [MySQL consistent snapshots](https://dev.mysql.com/doc/refman/8.4/en/commit.html). The workflow retains its shared concurrency group and explicitly checks out `main`; dispatches for other branches are skipped. Publication is serialized with export/deployment, and branch updates never force-overwrite concurrent commits. These freshness changes do not alter the database schema or cron service credentials.
+Exports read all public tables in one read-only consistent snapshot and use the database's UTC timestamp at its creation, rather than the export runner's clock or finish time. See [MySQL consistent snapshots](https://dev.mysql.com/doc/refman/8.4/en/commit.html). The rankings job explicitly checks out `main`; dispatches for other branches are skipped. Export/publication is serialized independently of Pages deployment, and branch updates never force-overwrite concurrent commits. These freshness changes do not alter the database schema or cron service credentials.
 
 ## Selected setup: hosted cron triggers GitHub every minute
 
-Selected on 2026-10-10 after GitHub's native schedule stopped delivering regular events; minute-by-minute dispatches were confirmed working on 2026-10-11. Existing working jobs need no reconfiguration for the feed fix above. For a new setup, use cron-job.org to call the existing GitHub workflow. GitHub exports from MySQL, publishes the public feed and deploys Pages; the external service only sends the authenticated trigger. Neither the bot hosting computer nor Cloudflare is needed. The following account setup is required only if no hosted job exists yet.
+Selected on 2026-10-10 after GitHub's native schedule stopped delivering regular events; minute-by-minute dispatches were confirmed working on 2026-10-11. Existing working jobs need no reconfiguration for the feed fix above. For a new setup, use cron-job.org to call the existing GitHub workflow. GitHub exports from MySQL and publishes the public feed; Pages deployment runs separately on source pushes or explicit manual requests. The external service only sends the authenticated trigger. Neither the bot hosting computer nor Cloudflare is needed. The following account setup is required only if no hosted job exists yet.
 
 ### 1. Create a limited GitHub token
 
@@ -73,7 +90,7 @@ Selected on 2026-10-10 after GitHub's native schedule stopped delivering regular
 
 1. With API version `2026-03-10`, a successful dispatch returns HTTP **200** with a workflow run ID and URL. This confirms the trigger, not the completed export. Older API versions may return **204** with no body.
 2. Open https://github.com/cosmiccrystal1/bowtiers-website/actions/workflows/pages.yml and find the new **workflow_dispatch** run (the UI may label it manually triggered, even when cron sent it). It will not have event type `schedule`.
-3. Confirm **Export public rankings**, **Publish and verify live rankings**, and **Deploy** finish successfully. The publication step logs the export timestamp/commit and `Live public rankings feed confirmed.` Check the update time on bowtiers.com after the first Pages deployment and reload.
+3. Confirm **Refresh public rankings → Export public rankings** and **Publish and verify live rankings** finish successfully. The publication step logs the export timestamp/commit and `Live public rankings feed confirmed.` Cron runs skip **Deploy website files**; source pushes deploy it, or select **Also deploy website files** in a manual run. Check the update time on bowtiers.com after the first Pages deployment and reload.
 4. Confirm the cron service's execution history advances at one-minute intervals and new GitHub runs appear. Workflow runtime, propagation and the site's 60-second polling add delay; one minute is a trigger interval, not a guaranteed end-to-end deadline.
 5. The prepared workflow removes the old native `schedule:` block now that hosted triggering is confirmed. Keep `workflow_dispatch:`, `push:`, all job steps, permissions and concurrency. This avoids duplicate deployments if GitHub's scheduler resumes. Do not disable the whole workflow in the Actions UI, as that would also prevent external dispatches.
 

@@ -1,24 +1,28 @@
 name: Export rankings and deploy Pages
 on:
   workflow_dispatch:
+    inputs:
+      deploy_pages:
+        description: Also deploy website files (minute cron updates rankings only)
+        type: boolean
+        default: false
   push:
     branches: [main]
     paths: ['site/**', 'scripts/**', 'test/**', 'package*.json', '.github/workflows/pages.yml']
 permissions:
-  contents: write
-  pages: write
-  id-token: write
-concurrency:
-  group: bowtiers-pages
-  cancel-in-progress: false
+  contents: read
 jobs:
-  deploy:
+  rankings:
+    name: Refresh public rankings
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: write
+    # Pages environment waits must never hold the feed publication lock.
+    concurrency:
+      group: bowtiers-rankings
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v6
         with:
@@ -43,10 +47,28 @@ jobs:
         run: npm run publish:rankings
         env:
           RANKINGS_GITHUB_TOKEN: ${{ github.token }}
-      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
+        if: github.event_name == 'push' || inputs.deploy_pages == true
         with:
           path: site
+  deploy:
+    name: Deploy website files
+    needs: rankings
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || inputs.deploy_pages == true)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: bowtiers-pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4

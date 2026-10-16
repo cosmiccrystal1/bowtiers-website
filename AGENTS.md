@@ -11,6 +11,8 @@
 
 # BowTiers public website
 
+- 2026-10-15: Public API confirmed run38263121140 waiting since Oct12 14:28UTC with no steps, holding workflow-wide bowtiers-pages; minute dispatches replace pending runs and raw feed remains2026-10-12T14:27:54.321Z. Environment permits main/no reviewers/wait timer; underlying GitHub wait unconfirmed. Prepared pages.yml split: rankings job uses independent bowtiers-rankings lock, contents-write, no Pages environment; deploy job only source push/manual deploy_pages=true, separate Pages lock/environment. Cron body remains ref:main and refreshes feed only; skipped deploy is expected. Repo MYSQL secrets unchanged. Syntax check/24 tests passed. Cancel old waiting run and publish workflow required; no live changes made. Preserve pre-existing site/index.html user edits.
+
 - 2026-10-12: Overall count label is Verified Players (individual lists remain tested players). Bow Grandmaster requires rank1 AND score>150, identical to the existing strict Bow Master threshold; otherwise use ordinary score title. Boundary regressions150/151 and local preview rank1 at125=>Bow Elitist verified. Public source schema/export unchanged; companion bot migration012 is private only. Local changes only, no commit/push/deploy.
 
 - This is the public repository `cosmiccrystal1/bowtiers-website`, publishing `site/` to GitHub Pages at bowtiers.com (domain registered at Porkbun).
