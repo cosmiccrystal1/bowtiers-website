@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-12T14:27:54.321Z",
+  "generatedAt": "2026-10-16T00:04:12.822Z",
   "players": [
     {
       "uuid": "fd4c353341ca4d32899a641035c4d1d9",
@@ -15,7 +15,7 @@
     {
       "uuid": "9994ef733ce947908218592190afde44",
       "username": "Chriso543",
-      "region": null
+      "region": "NA"
     },
     {
       "uuid": "12b164ebe68a4415a17f82306216db40",
@@ -26,6 +26,11 @@
       "uuid": "e20b3d84c2ad41abac37224ca20cecf7",
       "username": "CutePvPpuppy67",
       "region": "EU"
+    },
+    {
+      "uuid": "d6be93d1e669413c830dff5369e2a3fe",
+      "username": "DEG4SI",
+      "region": "NA"
     },
     {
       "uuid": "e47678f0355d40d2a1ec46c5abd910f4",
@@ -50,7 +55,12 @@
     {
       "uuid": "5357415502b340aaac1a18f5d6840a26",
       "username": "Jamison5",
-      "region": null
+      "region": "NA"
+    },
+    {
+      "uuid": "ded66f4419a9488f8a02abf7fd3297c6",
+      "username": "KamQDCheerleader",
+      "region": "NA"
     },
     {
       "uuid": "72af842d3c5b4517b54eccc382ed8435",
@@ -60,6 +70,11 @@
     {
       "uuid": "32afd9cf96fb43f0abbcec288ac35490",
       "username": "RealMeowzers",
+      "region": "NA"
+    },
+    {
+      "uuid": "97ac71792bba45b786e4144a2fcf392d",
+      "username": "viscia",
       "region": "NA"
     },
     {
@@ -119,6 +134,12 @@
           "region": "EU"
         },
         {
+          "uuid": "ded66f4419a9488f8a02abf7fd3297c6",
+          "username": "KamQDCheerleader",
+          "tier": "HT4",
+          "region": "NA"
+        },
+        {
           "uuid": "e47678f0355d40d2a1ec46c5abd910f4",
           "username": "Delects",
           "tier": "LT4",
@@ -127,6 +148,12 @@
         {
           "uuid": "32afd9cf96fb43f0abbcec288ac35490",
           "username": "RealMeowzers",
+          "tier": "LT4",
+          "region": "NA"
+        },
+        {
+          "uuid": "97ac71792bba45b786e4144a2fcf392d",
+          "username": "viscia",
           "tier": "LT4",
           "region": "NA"
         }
