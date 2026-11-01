@@ -1,12 +1,7 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-01T01:50:18.113Z",
+  "generatedAt": "2026-11-01T01:52:12.716Z",
   "players": [
-    {
-      "uuid": "52522709069e40c78abe41af758d33c8",
-      "username": "_Cherrypepsi",
-      "region": "NA"
-    },
     {
       "uuid": "fd4c353341ca4d32899a641035c4d1d9",
       "username": "Benbloom",
@@ -200,12 +195,6 @@
           "uuid": "12b164ebe68a4415a17f82306216db40",
           "username": "CosmicCrystal",
           "tier": "HT3",
-          "region": "NA"
-        },
-        {
-          "uuid": "52522709069e40c78abe41af758d33c8",
-          "username": "_Cherrypepsi",
-          "tier": "LT3",
           "region": "NA"
         },
         {
