@@ -2,6 +2,7 @@ import 'dotenv/config';
 import mysql from 'mysql2/promise';
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { readSnapshot } from './export-snapshot.js';
+import { refreshMinecraftNames } from './minecraft-names.js';
 function required(name) { if (!process.env[name]) throw new Error(`Missing website export variable ${name}.`); return process.env[name]; }
 async function main() {
   const pool = mysql.createPool({
@@ -15,6 +16,7 @@ async function main() {
     const conn = await pool.getConnection();
     let snapshot;
     try { snapshot = await readSnapshot(conn); } finally { conn.release(); }
+    snapshot = await refreshMinecraftNames(snapshot);
     await mkdir('site/data', { recursive: true });
     const temp = `site/data/tiers-${process.pid}.tmp`;
     await writeFile(temp, JSON.stringify(snapshot, null, 2) + '\n');
