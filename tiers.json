@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-11T16:36:14.559Z",
+  "generatedAt": "2026-11-11T16:38:14.409Z",
   "players": [
     {
       "uuid": "52522709069e40c78abe41af758d33c8",
@@ -50,6 +50,11 @@
     {
       "uuid": "681ab17ea6d54a74a03ca5340967b59b",
       "username": "ezstaymad",
+      "region": "EU"
+    },
+    {
+      "uuid": "b7fcab21fcfe4df5995121a8af79632c",
+      "username": "HackerVoid",
       "region": "EU"
     },
     {
