@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-11T20:57:44.598Z",
+  "generatedAt": "2026-11-11T20:57:58.601Z",
   "players": [
     {
       "uuid": "52522709069e40c78abe41af758d33c8",
@@ -64,7 +64,7 @@
     },
     {
       "uuid": "f52cbf3df1ff4a32a0978ce88cf307cc",
-      "username": "HeavensBliss",
+      "username": "cutekittybliss",
       "region": "NA"
     },
     {
@@ -79,7 +79,7 @@
     },
     {
       "uuid": "ded66f4419a9488f8a02abf7fd3297c6",
-      "username": "KamQDCheerleader",
+      "username": "GyattBuns",
       "region": "NA"
     },
     {
@@ -175,7 +175,7 @@
         },
         {
           "uuid": "ded66f4419a9488f8a02abf7fd3297c6",
-          "username": "KamQDCheerleader",
+          "username": "GyattBuns",
           "tier": "HT4",
           "region": "NA"
         },
@@ -240,7 +240,7 @@
         },
         {
           "uuid": "f52cbf3df1ff4a32a0978ce88cf307cc",
-          "username": "HeavensBliss",
+          "username": "cutekittybliss",
           "tier": "LT3",
           "region": "NA"
         },
