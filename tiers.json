@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-11T17:20:19.996Z",
+  "generatedAt": "2026-11-11T17:22:16.604Z",
   "players": [
     {
       "uuid": "52522709069e40c78abe41af758d33c8",
@@ -40,6 +40,11 @@
     {
       "uuid": "e47678f0355d40d2a1ec46c5abd910f4",
       "username": "Delects",
+      "region": "NA"
+    },
+    {
+      "uuid": "e7b2bef37c9744469657fdbf4f09a0fd",
+      "username": "Devilsta",
       "region": "NA"
     },
     {
