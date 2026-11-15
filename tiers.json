@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-15T19:06:25.357Z",
+  "generatedAt": "2026-11-15T19:08:15.374Z",
   "players": [
     {
       "uuid": "52522709069e40c78abe41af758d33c8",
@@ -105,6 +105,11 @@
     {
       "uuid": "f53b24b83e62469d96a0d6f0d3dfa4d7",
       "username": "Nightcrawler957",
+      "region": "NA"
+    },
+    {
+      "uuid": "12637b9534ae4af48c8b379941c332ca",
+      "username": "peepoLOL",
       "region": "NA"
     },
     {
